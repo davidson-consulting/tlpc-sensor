@@ -1,0 +1,8 @@
+Package: tlpc-sensor
+Version: 0.0.1
+Section: custom
+Priority: optional
+Architecture: all
+Essential: no
+Maintainer: benjamin.danglot@davidson.fr
+Description: Sensor to measure Performance Counters during a Time-lapse (Start & Stop)
