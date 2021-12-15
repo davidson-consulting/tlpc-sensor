@@ -1,6 +1,6 @@
 # Time-Lapse Performance Counters (TLPC) Sensor
 
-TLPC-sensor aims at providing an API to measure various Performance Counters, such as the number of executed intructions and cycles, or energy consumption (with RAPL) in a time-lapse, designated by the call of the function `start()` and `stop()`.
+TLPC-sensor aims at providing an API to measure various Performance Counters, such as the number of executed intructions and cycles, or energy consumption (with RAPL) in a time-lapse, designed by the call of the function `start()` and `stop()`.
 
 ## Install
 
@@ -13,6 +13,16 @@ cd tlpc-sensor && mkdir build && cd build
 cmake ..
 make
 ./tlpc-sensor
+```
+
+You should see on the screen something like:
+
+```txt
+nb counter 2
+enable time 35692166
+running time 35692166
+INSTRUCTIONS_RETIRED 39566756
+CYCLES 45724133
 ```
 
 You need sudo priviliege and run `echo -1 > /proc/sys/kernel/perf_event_paranoid`.
