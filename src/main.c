@@ -22,11 +22,18 @@ char* perf_counters_type[nb_perf_counter] = {
     "CYCLES"
 };
 
+#define nb_rapl_counter 1
+
+char* rapl_counters_type[nb_rapl_counter] = {
+    "RAPL_ENERGY_PKG"
+};
+
 int
 main(int argc, char **argv) {
     // making gcc happy
     printf("%d %s\n", argc, argv[0]);
-    struct config *config = init_config(nb_perf_counter, perf_counters_type);
-    server_run(config);
+    struct config *config_perf = init_config(nb_perf_counter, perf_counters_type);
+    struct config *config_rapl = init_config(nb_rapl_counter, rapl_counters_type);
+    server_run(config_perf, config_rapl);
     return EXIT_SUCCESS;
 }

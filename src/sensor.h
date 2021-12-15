@@ -9,8 +9,10 @@
 #include <sys/syscall.h>
 #include <perfmon/pfmlib_perf_event.h>
 #include <fcntl.h>
+#include <stddef.h>
 
 #include "config.h"
+#include "perf.h"
 
 /*
  * perf_counter_value stores the counter value.
@@ -29,8 +31,9 @@ struct perf_read_format {
     struct perf_counter_value values[];
 };
 
+int sensor_init(struct config *config_perf, struct config *config_rapl, pid_t pid);
 
-int sensor_init(struct perf_counter_name perf_counters_names[], int nb_event, pid_t pid);
+int sensor_init_for_group(struct config *config, int* group_leader_fd, pid_t pid);
 
 int sensor_start();
 
@@ -38,4 +41,5 @@ int sensor_stop();
 
 int sensor_terminate();
 
-int sensor_read(struct perf_read_format* buffer, size_t buffer_size);
+int sensor_read(struct perf_read_format *perf_buffer, size_t perf_buffer_size, 
+                struct perf_read_format *rapl_buffer, size_t rapl_buffer_size);

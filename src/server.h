@@ -22,10 +22,10 @@
 
 int server_init();
 
-int server_run(struct config *config);
+int server_run(struct config *config_perf, struct config *config_rapl);
 
-int server_start_sensor(int socket_desc, struct config *config, struct sockaddr_in client_addr, socklen_t client_struct_length);
+int server_start_sensor(int socket_desc, struct config *config_perf, struct config *config_rapl, struct sockaddr_in client_addr, socklen_t client_struct_length);
 
-int server_stop_sensor(int socket_desc, struct config *config, struct sockaddr_in client_addr, socklen_t client_struct_length);
+int server_stop_sensor(int socket_desc, struct config *config_perf, struct config *config_rapl, struct sockaddr_in client_addr, socklen_t client_struct_length);
 
 int server_stop(int socket_desc);
