@@ -11,15 +11,14 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O2 -D_FORTIFY_SOURCE=2")
 find_package(PkgConfig)
 #pkg_check_modules(BSON_STATIC REQUIRED libbson-1.0)
 #pkg_check_modules(CZMQ_STATIC REQUIRED libczmq)
-#pkg_check_modules(PFM REQUIRED libpfm)
 
 set(SENSOR_SOURCES
-    #src/playground.c
     src/main.c
     src/config.h src/config.c
     src/sensor.h src/sensor.c
     src/perf.h src/perf.c
     src/server.h src/server.c
+    src/report.h src/report.c
 )
 #set(SENSOR_INCLUDES "${CZMQ_STATIC_INCLUDE_DIRS}")
 #set(SENSOR_DEFINITIONS "${CZMQ_STATIC_DEFINITIONS}")

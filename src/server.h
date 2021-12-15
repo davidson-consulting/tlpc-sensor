@@ -19,6 +19,9 @@
 #include <stddef.h>
 
 #include "config.h"
+#include "sensor.h"
+#include "perf.h"
+#include "report.h"
 
 int server_init();
 

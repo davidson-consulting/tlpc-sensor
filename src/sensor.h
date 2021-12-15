@@ -14,6 +14,9 @@
 #include "config.h"
 #include "perf.h"
 
+#ifndef SENSOR_H
+#define SENSOR_H
+
 /*
  * perf_counter_value stores the counter value.
  */
@@ -43,3 +46,5 @@ int sensor_terminate();
 
 int sensor_read(struct perf_read_format *perf_buffer, size_t perf_buffer_size, 
                 struct perf_read_format *rapl_buffer, size_t rapl_buffer_size);
+
+#endif

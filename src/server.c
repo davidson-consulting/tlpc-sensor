@@ -1,6 +1,4 @@
 #include "server.h"
-#include "sensor.h"
-#include "perf.h"
 
 int
 server_init() {
@@ -64,31 +62,12 @@ server_start_sensor(int socket_desc, struct config *config_perf, struct config *
 int
 server_stop_sensor(int socket_desc, struct config *config_perf, struct config *config_rapl, struct sockaddr_in client_addr, socklen_t client_struct_length) {
     sensor_stop();
-    
     size_t perf_buffer_size = offsetof(struct perf_read_format, values) + sizeof(struct perf_counter_value[(int)config_perf->nb_counter]);
     struct perf_read_format *perf_buffer = (struct perf_read_format *) malloc(perf_buffer_size);
-
     size_t rapl_buffer_size = offsetof(struct perf_read_format, values) + sizeof(struct perf_counter_value[(int)config_rapl->nb_counter]);
     struct perf_read_format *rapl_buffer = (struct perf_read_format *) malloc(rapl_buffer_size);
-
     sensor_read(perf_buffer, perf_buffer_size, rapl_buffer, rapl_buffer_size);
-
-    printf("PERF COUNTERS\n");
-    printf("nb counter %ld\n", perf_buffer->nr);
-    printf("enable time %ld\n", perf_buffer->time_enabled);
-    printf("running time %ld\n", perf_buffer->time_running);
-    for (int i = 0 ; i < config_perf->nb_counter; i++) {
-        printf("%s %ld\n", config_perf->counters_names[i].value, perf_buffer->values[i].value);
-    }
-
-    printf("RAPL COUNTERS\n");
-    printf("nb counter %ld\n", rapl_buffer->nr);
-    printf("enable time %ld\n", rapl_buffer->time_enabled);
-    printf("running time %ld\n", rapl_buffer->time_running);
-    for (int i = 0 ; i < config_rapl->nb_counter; i++) {
-        printf("%s %ld\n", config_rapl->counters_names[i].value, rapl_buffer->values[i].value);
-    }
-
+    report_write(config_perf, config_rapl, perf_buffer, rapl_buffer);
     sensor_terminate();
     if (sendto(socket_desc, "ACK", 3, 0,
                 (struct sockaddr*)&client_addr, client_struct_length) < 0){
