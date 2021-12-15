@@ -24,14 +24,9 @@ char* perf_counters_type[nb_perf_counter] = {
 
 int
 main(int argc, char **argv) {
-
     // making gcc happy
     printf("%d %s\n", argc, argv[0]);
-
     struct config *config = init_config(nb_perf_counter, perf_counters_type);
-    server_init();
     server_run(config);
-    
-
     return EXIT_SUCCESS;
 }

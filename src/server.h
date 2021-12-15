@@ -5,6 +5,18 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <linux/perf_event.h>
+#include <asm/unistd.h>
+#include <linux/hw_breakpoint.h>
+#include <sys/syscall.h>
+#include <perfmon/pfmlib_perf_event.h>
+#include <fcntl.h>
+#include <stddef.h>
 
 #include "config.h"
 
@@ -12,4 +24,8 @@ int server_init();
 
 int server_run(struct config *config);
 
-int server_stop();
+int server_start_sensor(int socket_desc, struct config *config, struct sockaddr_in client_addr, socklen_t client_struct_length);
+
+int server_stop_sensor(int socket_desc, struct config *config, struct sockaddr_in client_addr, socklen_t client_struct_length);
+
+int server_stop(int socket_desc);
