@@ -3,14 +3,14 @@
 
 static int group_leader_fd;
 
-int sensor_init(char** event_names, int nb_event) {
+int sensor_init(struct perf_counter_name perf_counters_names[], int nb_event, pid_t pid) {
     perf_initialize();
     group_leader_fd = -1;
     for (int i = 0 ; i < nb_event ; i++) {
-        printf("Initialize %s\n", event_names[i]);
+        printf("Initialize %s%d\n", perf_counters_names[i].value, pid);
         struct perf_event_attr attr = {0};
-        perf_init_event_attr(event_names[i], &attr);
-        group_leader_fd = perf_open_event(&attr, 0, -1, group_leader_fd, 0);
+        perf_init_event_attr(perf_counters_names[i].value, &attr);
+        group_leader_fd = perf_open_event(&attr, pid, -1, group_leader_fd, 0);
     }
     return 0;
 }

@@ -14,11 +14,16 @@ find_package(PkgConfig)
 #pkg_check_modules(PFM REQUIRED libpfm)
 
 set(SENSOR_SOURCES
+    #src/playground.c
     src/main.c
+    src/config.h src/config.c
     src/sensor.h src/sensor.c
     src/perf.h src/perf.c
+    src/server.h src/server.c
 )
-
+#set(SENSOR_INCLUDES "${CZMQ_STATIC_INCLUDE_DIRS}")
+#set(SENSOR_DEFINITIONS "${CZMQ_STATIC_DEFINITIONS}")
+#set(SENSOR_LIBRARIES "${CZMQ_STATIC_LIBRARIES}" pfm)
 set(SENSOR_LIBRARIES pfm)
 
 add_executable(tlpc-sensor "${SENSOR_SOURCES}")

@@ -10,6 +10,8 @@
 #include <perfmon/pfmlib_perf_event.h>
 #include <fcntl.h>
 
+#include "config.h"
+
 /*
  * perf_counter_value stores the counter value.
  */
@@ -28,7 +30,7 @@ struct perf_read_format {
 };
 
 
-int sensor_init(char** event_name, int nb_event);
+int sensor_init(struct perf_counter_name perf_counters_names[], int nb_event, pid_t pid);
 
 int sensor_start();
 
