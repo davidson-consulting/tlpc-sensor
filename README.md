@@ -30,15 +30,15 @@ $ ./tlpc-sensor
 Socket created successfully
 ```
 
-Then, compile the `client.c` file with:
+Then, go to the `examples` folder and run:
 
 ```sh
-gcc -ggdb3 -O0 -std=c11 -Wall -Wextra -pedantic -L/usr/local/lib client.c -o client
+make all
 ```
 
-And run it:
+And run the c version of the client:
 ```sh
-./client 
+./LWPC
 Socket created successfully
 start 305235 
 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 ...
