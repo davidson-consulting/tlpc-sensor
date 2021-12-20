@@ -15,10 +15,11 @@
 #include "server.h"
 #include "config.h"
 
-#define nb_perf_counter 2
+#define nb_perf_counter 3
 
 char* perf_counters_type[nb_perf_counter] = {
     "INSTRUCTIONS_RETIRED",
+    "LLC_MISSES",
     "CYCLES"
 };
 

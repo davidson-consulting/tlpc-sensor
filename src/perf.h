@@ -9,6 +9,7 @@
 #include <sys/syscall.h>
 #include <perfmon/pfmlib_perf_event.h>
 #include <fcntl.h>
+#include <errno.h>
 
 int
 perf_initialize();
