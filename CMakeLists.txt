@@ -9,8 +9,8 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0 -fsanitize=address,undefined
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O2 -D_FORTIFY_SOURCE=2")
 
 find_package(PkgConfig)
-#pkg_check_modules(BSON_STATIC REQUIRED libbson-1.0)
-#pkg_check_modules(CZMQ_STATIC REQUIRED libczmq)
+find_package(JNI REQUIRED)
+include_directories(${JNI_INCLUDE_DIRS})
 
 set(SENSOR_SOURCES
     src/main.c
@@ -19,18 +19,12 @@ set(SENSOR_SOURCES
     src/perf.h src/perf.c
     src/server.h src/server.c
     src/report.h src/report.c
+    src/JNIClient.h src/JNIClient.c
 )
-#set(SENSOR_INCLUDES "${CZMQ_STATIC_INCLUDE_DIRS}")
-#set(SENSOR_DEFINITIONS "${CZMQ_STATIC_DEFINITIONS}")
-#set(SENSOR_LIBRARIES "${CZMQ_STATIC_LIBRARIES}" pfm)
 set(SENSOR_LIBRARIES pfm)
 
 add_executable(tlpc-sensor "${SENSOR_SOURCES}")
-
-target_include_directories(tlpc-sensor PRIVATE "${SENSOR_INCLUDES}")
-target_compile_definitions(tlpc-sensor PRIVATE "${SENSOR_DEFINITIONS}")
 target_link_libraries(tlpc-sensor "${SENSOR_LIBRARIES}")
 
-target_include_directories (tlpc-sensor PRIVATE ${BSON_STATIC_INCLUDE_DIRS})
-target_link_libraries (tlpc-sensor PRIVATE ${BSON_STATIC_LIBRARIES})
-target_compile_definitions (tlpc-sensor PRIVATE ${BSON_STATIC_DEFINITIONS})
+add_library(perf SHARED ${SENSOR_SOURCES})
+target_link_libraries(perf "${SENSOR_LIBRARIES}")
