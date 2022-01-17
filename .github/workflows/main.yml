@@ -15,4 +15,4 @@ jobs:
           repository: 'gfieni/libpfm4'
           path: './libpfm4'
       - name: Install libpfm4
-        run: cd libpfm4 && make && make install
+        run: sudo sh -c 'cd libpfm4 && make && make install'
