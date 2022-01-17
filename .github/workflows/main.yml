@@ -16,3 +16,9 @@ jobs:
           path: './libpfm4'
       - name: Install libpfm4
         run: sudo sh -c 'cd libpfm4 && make && make install'
+      - name: Build TLPC-sensor
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
