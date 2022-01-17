@@ -31,7 +31,7 @@ char* _rapl_counters_type[_nb_rapl_counter] = {
  * Method:    start
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_JNIClient_start
+JNIEXPORT void JNICALL Java_fr_davidson_j_tlpc_sensor_JNIClient_start
   (JNIEnv *, jobject);
 
 /*
@@ -39,7 +39,7 @@ JNIEXPORT void JNICALL Java_JNIClient_start
  * Method:    stop
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_JNIClient_stop
+JNIEXPORT void JNICALL Java_fr_davidson_j_tlpc_sensor_JNIClient_stop
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

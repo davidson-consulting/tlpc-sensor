@@ -5,7 +5,7 @@
  * Method:    start
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_JNIClient_start(JNIEnv *env, jobject o) {
+JNIEXPORT void JNICALL Java_fr_davidson_j_tlpc_sensor_JNIClient_start(JNIEnv *env, jobject o) {
   (void)env;
   (void)o;
   struct config *config_perf = init_config(_nb_perf_counter, _perf_counters_type);
@@ -19,7 +19,7 @@ JNIEXPORT void JNICALL Java_JNIClient_start(JNIEnv *env, jobject o) {
  * Method:    stop
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_JNIClient_stop(JNIEnv *env, jobject o) {
+JNIEXPORT void JNICALL Java_fr_davidson_j_tlpc_sensor_JNIClient_stop(JNIEnv *env, jobject o) {
   sensor_stop();
   (void)env;
   (void)o;
