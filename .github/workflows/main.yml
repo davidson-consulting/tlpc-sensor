@@ -22,3 +22,12 @@ jobs:
           cd build
           cmake ..
           make
+      - name: Build examples
+        run: |
+          cd examples
+          ls
+          make all
+      - name: Run TLPC-sensor
+        run: timeout 60s ./build/tlpc-sensor
+      - name: Test in C
+        run: ./examples/client
