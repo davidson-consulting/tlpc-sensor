@@ -52,9 +52,12 @@ int main(void){
     for (int i = 0 ; i < 10 ; i++) {
         printf("%d,", i);
     }
+    printf("\n");
 
-    // Send the message to server:
-    if(sendto(socket_desc, "stop", 4, 0,
+    char *stop_message = (char*)malloc(4 * sizeof(char) + 14 * sizeof(char));
+    sprintf(stop_message, "%s %s", "stop", "report_c.json");
+    printf("%s\n", stop_message);
+    if(sendto(socket_desc, stop_message, 18, 0,
          (struct sockaddr*)&server_addr, server_struct_length) < 0){
         printf("Unable to send message\n");
         return -1;
