@@ -40,7 +40,7 @@ JNIEXPORT void JNICALL Java_fr_davidson_j_tlpc_sensor_JNIClient_start
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_fr_davidson_j_tlpc_sensor_JNIClient_stop
-  (JNIEnv *, jobject);
+  (JNIEnv *, jobject, jstring);
 
 #ifdef __cplusplus
 }

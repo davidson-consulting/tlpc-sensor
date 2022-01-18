@@ -19,7 +19,7 @@ JNIEXPORT void JNICALL Java_fr_davidson_j_tlpc_sensor_JNIClient_start(JNIEnv *en
  * Method:    stop
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_fr_davidson_j_tlpc_sensor_JNIClient_stop(JNIEnv *env, jobject o) {
+JNIEXPORT void JNICALL Java_fr_davidson_j_tlpc_sensor_JNIClient_stop(JNIEnv *env, jobject o, jstring s) {
   sensor_stop();
   (void)env;
   (void)o;
@@ -30,6 +30,6 @@ JNIEXPORT void JNICALL Java_fr_davidson_j_tlpc_sensor_JNIClient_stop(JNIEnv *env
   size_t rapl_buffer_size = offsetof(struct perf_read_format, values) + sizeof(struct perf_counter_value[(int)config_rapl->nb_counter]);
   struct perf_read_format *rapl_buffer = (struct perf_read_format *) malloc(rapl_buffer_size);
   sensor_read(perf_buffer, perf_buffer_size, rapl_buffer, rapl_buffer_size);
-  report_write(config_perf, config_rapl, perf_buffer, rapl_buffer);
+  report_write((*env)->GetStringUTFChars(env, s, 0), config_perf, config_rapl, perf_buffer, rapl_buffer);
   sensor_terminate();
 }

@@ -1,9 +1,10 @@
 #include "report.h"
 
 int
-report_write(struct config *config_perf, struct config *config_rapl, 
+report_write(const char* pathname, 
+             struct config *config_perf, struct config *config_rapl, 
              struct perf_read_format *perf_buffer, struct perf_read_format *rapl_buffer) {
-    FILE *fptr = fopen("./report.json","w");
+    FILE *fptr = fopen(pathname == NULL ? "./report.json" : pathname, "w");
     fprintf(fptr, "{\n");
      for (int i = 0 ; i < config_rapl->nb_counter; i++) {
         fprintf(fptr, "\t\"%s\":%ld,\n", config_rapl->counters_names[i].value, rapl_buffer->values[i].value);
