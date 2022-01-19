@@ -31,4 +31,6 @@ int server_start_sensor(int socket_desc, struct config *config_perf, struct conf
 
 int server_stop_sensor(int socket_desc, struct config *config_perf, struct config *config_rapl, struct sockaddr_in client_addr, socklen_t client_struct_length);
 
+int server_report(int socket_desc, struct config *config_perf, struct config *config_rapl, struct sockaddr_in client_addr, socklen_t client_struct_length);
+
 int server_stop(int socket_desc);
