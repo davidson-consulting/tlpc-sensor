@@ -40,7 +40,7 @@ And run the c version of the client:
 ```sh
 ./client
 Socket created successfully
-start 305235 
+start 467272 
 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 ...
 ```
 
@@ -49,20 +49,36 @@ where the number after `start` is the PID of the process.
 On the server side, you should see something like:
 
 ```sh
-Initialize INSTRUCTIONS_RETIRED (305235)
-Initialize CYCLES (305235)
-Initialize RAPL_ENERGY_PKG (305235)
+Initialize INSTRUCTIONS_RETIRED (467272)
+Initialize LLC_MISSES (467272)
+Initialize CYCLES (467272)
+Initialize RAPL_ENERGY_PKG (467272)
+Initialize INSTRUCTIONS_RETIRED (467272)
+Initialize LLC_MISSES (467272)
+Initialize CYCLES (467272)
+Initialize RAPL_ENERGY_PKG (467272)
 ```
 
 Then, in `build/report.json`, you can observe the result:
 
 ```json
 {
-	"RAPL_ENERGY_PKG":851181568,
-	"INSTRUCTIONS_RETIRED":7841417,
-	"CYCLES":2792603
+	"c": {
+		"RAPL_ENERGY_PKG":46788,
+		"INSTRUCTIONS_RETIRED":46788,
+		"LLC_MISSES":1935,
+		"CYCLES":138956
+	},
+	"c100000": {
+		"RAPL_ENERGY_PKG":81815483,
+		"INSTRUCTIONS_RETIRED":81815483,
+		"LLC_MISSES":38604,
+		"CYCLES":34372848
+	}
 }
 ```
+
+The first record identified by `c` is a loop of 10 iteration, the second record identified by `c100000` is a loop of 100000 iterations.
 
 You can play with the number of iterations of the loop to see the impact on the counters.
 
