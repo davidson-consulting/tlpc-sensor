@@ -32,7 +32,6 @@ server_run(struct config *config_perf, struct config *config_rapl) {
             printf("Couldn't receive\n");
             return -1;
         }
-        printf("%s\n", client_message);
         char *cursor = strtok(client_message, " ");
         if (strcmp("start", cursor) == 0) {
             server_start_sensor(socket_desc, config_perf, config_rapl, client_addr, client_struct_length);

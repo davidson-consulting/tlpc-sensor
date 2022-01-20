@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "sensor.h"
 #include "config.h"
@@ -6,19 +8,15 @@
 #ifndef REPORT_H
 #define REPORT_H
 
-struct record {
-    struct perf_read_format perf_buffer;
-    struct perf_read_format rapl_buffer;
-};
-
 struct entry {
-    char* identifier;
-    struct record values;
+    char *identifier;
+    struct perf_read_format *perf_buffer;
+    struct perf_read_format *rapl_buffer;
 };
-
-struct entry *entries;
 
 #define nb_entries 64
+
+struct entry entries[nb_entries];
 
 int current_nb;
 
@@ -31,6 +29,7 @@ report_store(const char* identifier, struct perf_read_format *perf_buffer, struc
 int
 report_write(const char* pathname, struct config *config_perf, struct config *config_rapl);
 
-int report_write_entry(struct entry entry, FILE *fptr, struct config *config_perf, struct config *config_rapl);
+int 
+report_write_entry(struct entry entry, FILE *fptr, struct config *config_perf, struct config *config_rapl);
 
 #endif
