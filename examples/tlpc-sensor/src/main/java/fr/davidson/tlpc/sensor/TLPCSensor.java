@@ -61,14 +61,4 @@ public class TLPCSensor {
         addDirectoryToLoadedLibraries();
         System.loadLibrary("perf");
     }
-
-    public static void main(String[] args) {
-        final TLPCSensor sensor = new TLPCSensor();
-        sensor.start();
-        for (int i = 0 ; i < 10000 ; i++) {
-            System.out.println(i);
-        }
-        sensor.stop("test");
-        sensor.report(null);
-    }
 }
