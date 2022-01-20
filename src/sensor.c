@@ -3,6 +3,14 @@
 static int rapl_group_leader_fd;
 static int perf_group_leader_fd;
 
+int
+sensor_init_perf_read_format(int nb_counter, struct perf_read_format *buffer) {
+    size_t buffer_size = offsetof(struct perf_read_format, values) + sizeof(struct perf_counter_value[nb_counter]);
+    buffer = (struct perf_read_format *) malloc(buffer_size);
+    (void)buffer;
+    return buffer_size;
+}
+
 int sensor_init(struct config *config_perf, struct config *config_rapl, pid_t pid) {
     perf_initialize();
     perf_group_leader_fd = -1;

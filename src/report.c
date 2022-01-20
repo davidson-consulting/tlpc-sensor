@@ -10,12 +10,15 @@ int
 report_store(const char* identifier, struct perf_read_format *perf_buffer, struct perf_read_format *rapl_buffer) {
     entries[current_nb].identifier = (char*) malloc(1024 * sizeof(char));
     strcpy(entries[current_nb].identifier, identifier);
-    size_t perf_buffer_size = offsetof(struct perf_read_format, values) + sizeof(struct perf_counter_value[3]);
-    entries[current_nb].perf_buffer = (struct perf_read_format *) malloc(perf_buffer_size);
-    size_t rapl_buffer_size = offsetof(struct perf_read_format, values) + sizeof(struct perf_counter_value[1]);
-    entries[current_nb].rapl_buffer = (struct perf_read_format *) malloc(rapl_buffer_size);
-    memcpy(entries[current_nb].perf_buffer, perf_buffer, perf_buffer_size);
-    memcpy(entries[current_nb].rapl_buffer, rapl_buffer, rapl_buffer_size);
+    // TODO: this should be replaced by a call to sensor_init_perf_read_format()
+    // size_t perf_buffer_size = offsetof(struct perf_read_format, values) + sizeof(struct perf_counter_value[(int)config_perf->nb_counter]);
+    // entries[current_nb].perf_buffer = (struct perf_read_format *) malloc(perf_buffer_size);
+    // size_t rapl_buffer_size = offsetof(struct perf_read_format, values) + sizeof(struct perf_counter_value[(int)config_rapl->nb_counter]);
+    // entries[current_nb].rapl_buffer = (struct perf_read_format *) malloc(rapl_buffer_size);
+    // memcpy(entries[current_nb].perf_buffer, perf_buffer, perf_buffer_size);
+    // memcpy(entries[current_nb].rapl_buffer, rapl_buffer, rapl_buffer_size);
+    entries[current_nb].perf_buffer = perf_buffer;
+    entries[current_nb].rapl_buffer = rapl_buffer;
     current_nb++;
     return 0;
 }

@@ -34,6 +34,9 @@ struct perf_read_format {
     struct perf_counter_value values[];
 };
 
+int
+sensor_init_perf_read_format(int nb_counter, struct perf_read_format *buffer);
+
 int sensor_init(struct config *config_perf, struct config *config_rapl, pid_t pid);
 
 int sensor_init_for_group(struct config *config, int* group_leader_fd, pid_t pid);
