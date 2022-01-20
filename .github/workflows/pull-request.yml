@@ -1,0 +1,24 @@
+name: Pull-Request CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          repository: 'gfieni/libpfm4'
+          path: './libpfm4'
+      - name: Install libpfm4
+        run: sudo sh -c 'cd libpfm4 && make && make install'
+      - name: Build TLPC-sensor
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
