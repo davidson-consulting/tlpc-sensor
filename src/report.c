@@ -41,7 +41,7 @@ int report_write_entry(struct entry entry, FILE *fptr,
                        struct config *config_perf, struct config *config_rapl) {
     const char* identifier = entry.identifier;
     struct perf_read_format *perf_buffer = entry.perf_buffer;
-    struct perf_read_format *rapl_buffer = entry.perf_buffer;
+    struct perf_read_format *rapl_buffer = entry.rapl_buffer;
     fprintf(fptr, "\t\"%s\": {\n", identifier);
     for (int i = 0 ; i < config_rapl->nb_counter; i++) {
         fprintf(fptr, "\t\t\"%s\":%ld,\n", config_rapl->counters_names[i].value, rapl_buffer->values[i].value);
