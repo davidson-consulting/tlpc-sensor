@@ -79,6 +79,11 @@ _deps
 
 # Examples files
 
-examples/JNIClient.class
-examples/j-tlpc-sensor/target/
-examples/j-tlpc-sensor/.vscode/
+examples/TLPCSensor.class
+examples/tlpc-sensor/.vscode/
+examples/tlpc-sensor/target/
+examples/client
+
+# Bin Files
+
+build/

@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fr.davidson</groupId>
-    <artifactId>j.tlpc.sensor</artifactId>
+    <artifactId>tlpc.sensor</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>j-TLPC-sensor</name>
+    <name>TLPC-sensor</name>
     <description>
-        j-TLPC-sensor is an adapter for TLPC-sensor in Java. It uses JNI to communicates with the API of TLPC-sensor.
+        TLPC-sensor is an adapter for TLPC-sensor in Java. It uses JNI to communicates with the API of TLPC-sensor.
     </description>
 
     <properties>

@@ -19,7 +19,7 @@ set(SENSOR_SOURCES
     src/perf.h src/perf.c
     src/server.h src/server.c
     src/report.h src/report.c
-    src/JNIClient.h src/JNIClient.c
+    src/TLPCSensor.h src/TLPCSensor.c
 )
 set(SENSOR_LIBRARIES pfm)
 
