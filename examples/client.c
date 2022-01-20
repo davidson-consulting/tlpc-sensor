@@ -54,10 +54,53 @@ int main(void){
     }
     printf("\n");
 
-    char *stop_message = (char*)malloc(4 * sizeof(char) + 14 * sizeof(char));
-    sprintf(stop_message, "%s %s", "stop", "report_c.json");
+    char *stop_message = (char*)malloc(64 * sizeof(char));// + 14 * sizeof(char));
+    sprintf(stop_message, "%s %s", "stop", "c10");
     printf("%s\n", stop_message);
-    if(sendto(socket_desc, stop_message, 18, 0,
+    if(sendto(socket_desc, stop_message, 6, 0,
+         (struct sockaddr*)&server_addr, server_struct_length) < 0){
+        printf("Unable to send message\n");
+        return -1;
+    }
+
+    // Send the message to server:
+    if(sendto(socket_desc, start_message, 15, 0,
+         (struct sockaddr*)&server_addr, server_struct_length) < 0){
+        printf("Unable to send message\n");
+        return -1;
+    }
+    // Receive the server's response:
+    if(recvfrom(socket_desc, server_message, sizeof(server_message), 0,
+         (struct sockaddr*)&server_addr, &server_struct_length) < 0){
+        printf("Error while receiving server's msg\n");
+        return -1;
+    }
+
+    for (int i = 0 ; i < 100000 ; i++) {
+        printf("%d,", i);
+    }
+    printf("\n");
+
+    sprintf(stop_message, "%s %s", "stop", "c100000");
+    if(sendto(socket_desc, stop_message, 64, 0,
+         (struct sockaddr*)&server_addr, server_struct_length) < 0){
+        printf("Unable to send message\n");
+        return -1;
+    }
+    
+    // Receive the server's response:
+    if(recvfrom(socket_desc, server_message, sizeof(server_message), 0,
+         (struct sockaddr*)&server_addr, &server_struct_length) < 0){
+        printf("Error while receiving server's msg\n");
+        return -1;
+    }
+    
+    printf("Server's response: %s\n", server_message);
+
+    char *report_message = (char*)malloc(7 * sizeof(char) + 14 * sizeof(char));
+    sprintf(report_message, "%s %s", "report", "report_c.json");
+    printf("%s\n", report_message);
+    if(sendto(socket_desc, report_message, 7+14, 0,
          (struct sockaddr*)&server_addr, server_struct_length) < 0){
         printf("Unable to send message\n");
         return -1;
@@ -75,6 +118,8 @@ int main(void){
     // Close the socket:
     close(socket_desc);
     free(start_message);
+    free(stop_message);
+    free(report_message);
     
     return 0;
 }
