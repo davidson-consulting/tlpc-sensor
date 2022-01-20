@@ -1,4 +1,4 @@
-package fr.davidson.j.tlpc.sensor;
+package fr.davidson.tlpc.sensor;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -6,11 +6,13 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-public class JNIClient {
+public class TLPCSensor {
 
     public native void start();
 
-    public native void stop();
+    public native void stop(String identifier);
+
+    public native void report(String pathname);
 
     private static final String DEFAULT_BASE_DIR = System.getProperty("java.io.tmpdir") + "/libperf";
 
@@ -24,7 +26,7 @@ public class JNIClient {
         }
         directory.mkdir();
         final String extractFilePath = DEFAULT_BASE_DIR + libperfDotSO;
-        try (final InputStream resourceAsStream = JNIClient.class.getResourceAsStream(libperfDotSO)) {
+        try (final InputStream resourceAsStream = TLPCSensor.class.getResourceAsStream(libperfDotSO)) {
             try (final FileOutputStream writer = new FileOutputStream(extractFilePath)) {
                 byte[] buffer = new byte[1024];
                 int bytesRead = 0;
@@ -61,12 +63,12 @@ public class JNIClient {
     }
 
     public static void main(String[] args) {
-        final JNIClient sensor = new JNIClient();
+        final TLPCSensor sensor = new TLPCSensor();
         sensor.start();
         for (int i = 0 ; i < 10000 ; i++) {
             System.out.println(i);
         }
-        sensor.stop();
+        sensor.stop("test");
+        sensor.report(null);
     }
-
 }
