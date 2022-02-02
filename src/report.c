@@ -34,6 +34,7 @@ report_write(const char* pathname, struct config *config_perf, struct config *co
     report_write_entry(entries[current_nb - 1], fptr, config_perf, config_rapl);
     fprintf(fptr, "\t}\n}");
     fclose(fptr);
+    current_nb = 0;
     return 0;
 }
 
