@@ -5,6 +5,7 @@
 #include "sensor.h"
 #include "config.h"
 #include "report.h"
+#include "map.h"
 
 #ifndef _Included_TLPCSensor
 #define _Included_TLPCSensor

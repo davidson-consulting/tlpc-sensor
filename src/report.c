@@ -7,11 +7,17 @@ report_init() {
 }
 
 int
-report_store(const char* identifier, struct perf_read_format *perf_buffer, struct perf_read_format *rapl_buffer) {
+report_store(const char* identifier,
+             struct perf_read_format *perf_buffer, 
+             struct perf_read_format *rapl_buffer,
+             clock_t starting_time,
+             clock_t ending_time) {
     entries[current_nb].identifier = (char*) malloc(1024 * sizeof(char));
     strcpy(entries[current_nb].identifier, identifier);
     entries[current_nb].perf_buffer = perf_buffer;
     entries[current_nb].rapl_buffer = rapl_buffer;
+    clock_t t = ending_time - starting_time;
+    entries[current_nb].elapsedTime = ((double)t)/CLOCKS_PER_SEC;
     current_nb++;
     return 0;
 }
@@ -31,7 +37,7 @@ report_write(const char* pathname, struct config *config_perf, struct config *co
     return 0;
 }
 
-int report_write_entry(struct entry entry, FILE *fptr,
+int report_write_entry(struct perf_data_by_id entry, FILE *fptr,
                        struct config *config_perf, struct config *config_rapl) {
     const char* identifier = entry.identifier;
     struct perf_read_format *perf_buffer = entry.perf_buffer;
