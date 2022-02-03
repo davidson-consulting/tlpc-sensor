@@ -1,19 +1,19 @@
 #include "map.h"
 
 int
-contains(char *identifier) {
+map_contains(char *identifier) {
     const int hash = get_hash(identifier);
     return strcmp(map[hash].identifier, identifier);
 }
 
 struct group_leaders_fd 
-get(char *identifier) {
+map_get(char *identifier) {
     const int hash = get_hash(identifier);
     return map[hash].group_leaders;
 }
 
 int
-put(char *identifier,  int rapl_group_leader_fd, int perf_group_leader_fd) {
+map_put(char *identifier,  int rapl_group_leader_fd, int perf_group_leader_fd) {
     if (contains(identifier)) {
         printf("The map contains already an association for the key %s\n", identifier);
         return 1;
@@ -26,7 +26,7 @@ put(char *identifier,  int rapl_group_leader_fd, int perf_group_leader_fd) {
 }
 
 int
-remove (char *identifier) {
+map_remove (char *identifier) {
     if (!contains(identifier)) {
         printf("The map does not contain an association for the key %s\n", identifier);
         return 1;
@@ -37,7 +37,7 @@ remove (char *identifier) {
 }
 
 int 
-get_hash(char *identifier) {
+map_get_hash(char *identifier) {
     unsigned long hash = 5381;
     int c;
     while (c = *identifier++) {
