@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class TLPCSensor {
 
-    public native void start();
+    public native void start(String identifier);
 
     public native void stop(String identifier);
 

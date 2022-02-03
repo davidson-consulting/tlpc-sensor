@@ -59,26 +59,33 @@ Initialize CYCLES (467272)
 Initialize RAPL_ENERGY_PKG (467272)
 ```
 
-Then, in `build/report.json`, you can observe the result:
+Then, in `build/report_c.json`, you can observe the result:
 
 ```json
 {
-	"c": {
-		"RAPL_ENERGY_PKG":46788,
-		"INSTRUCTIONS_RETIRED":46788,
-		"LLC_MISSES":1935,
-		"CYCLES":138956
+	"loop1": {
+		"RAPL_ENERGY_PKG":15827730432,
+		"INSTRUCTIONS_RETIRED":196027600,
+		"LLC_MISSES":116295,
+		"CYCLES":200173862
 	},
-	"c100000": {
-		"RAPL_ENERGY_PKG":81815483,
-		"INSTRUCTIONS_RETIRED":81815483,
-		"LLC_MISSES":38604,
-		"CYCLES":34372848
+	"loop2": {
+		"RAPL_ENERGY_PKG":23072342016,
+		"INSTRUCTIONS_RETIRED":195278548,
+		"LLC_MISSES":94595,
+		"CYCLES":201935383
+	},
+	"main": {
+		"RAPL_ENERGY_PKG":62876811264,
+		"INSTRUCTIONS_RETIRED":788001573,
+		"LLC_MISSES":314443,
+		"CYCLES":813863986
 	}
 }
 ```
 
-The first record identified by `c` is a loop of 10 iteration, the second record identified by `c100000` is a loop of 100000 iterations.
+The records `loop1` and `loop2` are successive loops of `10000` iterations and the record `main` wrap both loops.
+Here, the consumption of `main` should be way more high than the two others, while the records of the loops should be similar.
 
 You can play with the number of iterations of the loop to see the impact on the counters.
 

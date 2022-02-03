@@ -13,6 +13,7 @@
 
 #include "config.h"
 #include "perf.h"
+#include "map.h"
 
 #ifndef SENSOR_H
 #define SENSOR_H
@@ -37,17 +38,16 @@ struct perf_read_format {
 int
 sensor_init_perf_read_format(int nb_counter, struct perf_read_format *buffer);
 
-int sensor_init(struct config *config_perf, struct config *config_rapl, pid_t pid);
+int sensor_init(struct config *config_perf, struct config *config_rapl, pid_t pid, const char *identifier);
 
-int sensor_init_for_group(struct config *config, int* group_leader_fd, pid_t pid);
+int sensor_start(const char *identifier);
 
-int sensor_start();
+int sensor_stop(const char *identifier);
 
-int sensor_stop();
+int sensor_terminate(const char *identifier);
 
-int sensor_terminate();
-
-int sensor_read(struct perf_read_format *perf_buffer, size_t perf_buffer_size, 
+int sensor_read(const char *identifier, 
+                struct perf_read_format *perf_buffer, size_t perf_buffer_size, 
                 struct perf_read_format *rapl_buffer, size_t rapl_buffer_size);
 
 #endif

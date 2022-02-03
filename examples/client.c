@@ -6,6 +6,28 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 
+int 
+send_message(
+        int socket_desc, 
+        struct sockaddr_in server_addr,
+        socklen_t server_struct_length,
+        char *message) {
+    printf("%s\n", message);
+    if(sendto(socket_desc, message, 128, 0,
+         (struct sockaddr*)&server_addr, server_struct_length) < 0){
+        printf("Unable to send message\n");
+        return -1;
+    }
+    return 0;
+}
+
+void
+loop(int iteration) {
+    for (int i = 0 ; i < iteration ; i++) {
+        printf("%d\n", i);
+    }
+}
+
 int main(void){
     int socket_desc;
     struct sockaddr_in server_addr;
@@ -24,7 +46,6 @@ int main(void){
         return -1;
     }
     printf("Socket created successfully\n");
-    
     // Set port and IP:
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(2000);
@@ -32,89 +53,56 @@ int main(void){
     
     pid_t pid = getpid();
 
-    char *start_message = (char*)malloc(15 * sizeof(char));
-    sprintf(start_message, "%s %d", "start", pid);
-    printf("%s\n", start_message);
+    char *start_message = (char*)malloc(128 * sizeof(char));
 
-    // Send the message to server:
-    if(sendto(socket_desc, start_message, 15, 0,
-         (struct sockaddr*)&server_addr, server_struct_length) < 0){
-        printf("Unable to send message\n");
-        return -1;
-    }
-    // Receive the server's response:
+    sprintf(start_message, "%s %d %s", "start", pid, "main");
+    send_message(socket_desc, server_addr, server_struct_length, start_message);
     if(recvfrom(socket_desc, server_message, sizeof(server_message), 0,
          (struct sockaddr*)&server_addr, &server_struct_length) < 0){
         printf("Error while receiving server's msg\n");
         return -1;
     }
 
-    for (int i = 0 ; i < 10 ; i++) {
-        printf("%d,", i);
-    }
-    printf("\n");
-
-    char *stop_message = (char*)malloc(64 * sizeof(char));// + 14 * sizeof(char));
-    sprintf(stop_message, "%s %s", "stop", "c10");
-    printf("%s\n", stop_message);
-    if(sendto(socket_desc, stop_message, 6, 0,
-         (struct sockaddr*)&server_addr, server_struct_length) < 0){
-        printf("Unable to send message\n");
-        return -1;
-    }
-
-    // Send the message to server:
-    if(sendto(socket_desc, start_message, 15, 0,
-         (struct sockaddr*)&server_addr, server_struct_length) < 0){
-        printf("Unable to send message\n");
-        return -1;
-    }
-    // Receive the server's response:
+    sprintf(start_message, "%s %d %s", "start", pid, "loop1");
+    send_message(socket_desc, server_addr, server_struct_length, start_message);
     if(recvfrom(socket_desc, server_message, sizeof(server_message), 0,
          (struct sockaddr*)&server_addr, &server_struct_length) < 0){
         printf("Error while receiving server's msg\n");
         return -1;
     }
+    loop(100000);
+    char *stop_message = (char*)malloc(128 * sizeof(char));    
+    sprintf(stop_message, "%s %s", "stop", "loop1");
+    send_message(socket_desc, server_addr, server_struct_length, stop_message);
 
-    for (int i = 0 ; i < 100000 ; i++) {
-        printf("%d,", i);
-    }
-    printf("\n");
+    loop(100000);
 
-    sprintf(stop_message, "%s %s", "stop", "c100000");
-    if(sendto(socket_desc, stop_message, 64, 0,
-         (struct sockaddr*)&server_addr, server_struct_length) < 0){
-        printf("Unable to send message\n");
-        return -1;
-    }
-    
-    // Receive the server's response:
+    start_message = (char*)malloc(128 * sizeof(char));
+    sprintf(start_message, "%s %d %s", "start", pid, "loop2");
+    send_message(socket_desc, server_addr, server_struct_length, start_message);
     if(recvfrom(socket_desc, server_message, sizeof(server_message), 0,
          (struct sockaddr*)&server_addr, &server_struct_length) < 0){
         printf("Error while receiving server's msg\n");
         return -1;
     }
-    
-    printf("Server's response: %s\n", server_message);
+    loop(100000);
+    stop_message = (char*)malloc(128 * sizeof(char));
+    sprintf(stop_message, "%s %s", "stop", "loop2");
+    send_message(socket_desc, server_addr, server_struct_length, stop_message);
 
-    char *report_message = (char*)malloc(7 * sizeof(char) + 14 * sizeof(char));
+    stop_message = (char*)malloc(128 * sizeof(char));
+    sprintf(stop_message, "%s %s", "stop", "main");
+    send_message(socket_desc, server_addr, server_struct_length, stop_message);
+
+    char *report_message = (char*)malloc(128 * sizeof(char) + 14 * sizeof(char));
     sprintf(report_message, "%s %s", "report", "report_c.json");
-    printf("%s\n", report_message);
-    if(sendto(socket_desc, report_message, 7+14, 0,
-         (struct sockaddr*)&server_addr, server_struct_length) < 0){
-        printf("Unable to send message\n");
-        return -1;
-    }
-    
-    // Receive the server's response:
+    send_message(socket_desc, server_addr, server_struct_length, report_message);
     if(recvfrom(socket_desc, server_message, sizeof(server_message), 0,
          (struct sockaddr*)&server_addr, &server_struct_length) < 0){
         printf("Error while receiving server's msg\n");
         return -1;
     }
-    
-    printf("Server's response: %s\n", server_message);
-    
+
     // Close the socket:
     close(socket_desc);
     free(start_message);
