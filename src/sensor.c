@@ -33,7 +33,7 @@ int sensor_init(struct config *config_perf, struct config *config_rapl, pid_t pi
 
 int 
 sensor_start(const char *identifier) {
-    struct group_leaders_fd leaders = map_get(identifier);
+    struct map_entry leaders = map_get(identifier);
     int perf_group_leader_fd = leaders.perf_group_leader_fd;
     int rapl_group_leader_fd = leaders.rapl_group_leader_fd;
     if (ioctl(rapl_group_leader_fd, PERF_EVENT_IOC_RESET, PERF_IOC_FLAG_GROUP) != 0) {
@@ -57,7 +57,7 @@ sensor_start(const char *identifier) {
 
 int 
 sensor_stop(const char *identifier) {
-    struct group_leaders_fd leaders = map_get(identifier);
+    struct map_entry leaders = map_get(identifier);
     int perf_group_leader_fd = leaders.perf_group_leader_fd;
     int rapl_group_leader_fd = leaders.rapl_group_leader_fd;
     ioctl(rapl_group_leader_fd, PERF_EVENT_IOC_DISABLE, PERF_IOC_FLAG_GROUP);
@@ -66,7 +66,7 @@ sensor_stop(const char *identifier) {
 
 int 
 sensor_terminate(const char *identifier) {
-    struct group_leaders_fd leaders = map_get(identifier);
+    struct map_entry leaders = map_get(identifier);
     int perf_group_leader_fd = leaders.perf_group_leader_fd;
     int rapl_group_leader_fd = leaders.rapl_group_leader_fd;
     perf_terminate();
@@ -79,7 +79,7 @@ int
 sensor_read(const char *identifier,
             struct perf_read_format *perf_buffer, size_t perf_buffer_size, 
             struct perf_read_format *rapl_buffer, size_t rapl_buffer_size) {
-    struct group_leaders_fd leaders = map_get(identifier);
+    struct map_entry leaders = map_get(identifier);
     int perf_group_leader_fd = leaders.perf_group_leader_fd;
     int rapl_group_leader_fd = leaders.rapl_group_leader_fd; 
     long unsigned int nb_read = read(perf_group_leader_fd, perf_buffer, perf_buffer_size);

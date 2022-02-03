@@ -61,4 +61,24 @@ public class TLPCSensor {
         addDirectoryToLoadedLibraries();
         System.loadLibrary("perf");
     }
+
+    public static void test() {
+        /**
+         *  This code is made avalaible to test the API
+         */
+        final TLPCSensor tlpcSensor = new TLPCSensor();
+        tlpcSensor.start("main");
+        tlpcSensor.start("loop1");
+        for (int i = 0; i < 100000 ; i++) {
+            System.out.println(i);
+        }
+        tlpcSensor.stop("loop1");
+        tlpcSensor.start("loop2");
+        for (int i = 0; i < 100000 ; i++) {
+            System.out.println(i);
+        }
+        tlpcSensor.stop("loop2");
+        tlpcSensor.stop("main");
+        tlpcSensor.report("target/report_java.json");
+    }
 }

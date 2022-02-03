@@ -3,28 +3,26 @@
 #include <unistd.h>
 #include <string.h>
 #include <stddef.h>
+#include <time.h>
 
 #ifndef MAP_H
 #define MAP_H
 
-struct group_leaders_fd {
+struct map_entry {
+    char *identifier;
     int rapl_group_leader_fd;
     int perf_group_leader_fd;
-};
-
-struct map_group_leader_fd_by_id {
-    char *identifier;
-    struct group_leaders_fd group_leaders;
+    clock_t starting_time;
 };
 
 #define SIZE_OF_MAP 1024
 
-struct map_group_leader_fd_by_id map[SIZE_OF_MAP];
+struct map_entry map[SIZE_OF_MAP];
 
 int
 map_contains(const char *identifier);
 
-struct group_leaders_fd 
+struct map_entry 
 map_get(const char *identifier);
 
 int
