@@ -6,15 +6,14 @@
 #ifndef MAP_H
 #define MAP_H
 
+struct group_leaders_fd {
+    int rapl_group_leader_fd;
+    int perf_group_leader_fd;
+};
 
 struct map_group_leader_fd_by_id {
     char *identifier;
     struct group_leaders_fd group_leaders;
-};
-
-struct group_leaders_fd {
-    int rapl_group_leader_fd;
-    int perf_group_leader_fd;
 };
 
 #define SIZE_OF_MAP 1024
