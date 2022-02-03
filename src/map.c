@@ -3,7 +3,7 @@
 int
 map_contains(const char *identifier) {
     const int hash = map_get_hash(identifier);
-    return strcmp(map[hash].identifier, identifier);
+    return map[hash].identifier != NULL;
 }
 
 struct group_leaders_fd 
@@ -14,11 +14,12 @@ map_get(const char *identifier) {
 
 int
 map_put(const char *identifier,  int rapl_group_leader_fd, int perf_group_leader_fd) {
-    if (map_contains(identifier)) {
-        printf("The map contains already an association for the key %s\n", identifier);
-        return 1;
-    }
     const int hash = map_get_hash(identifier);
+    if (map[hash].identifier != NULL && !strcmp(map[hash].identifier, identifier)) {
+        printf("Collision detected between %s and %s (hash: %d)", identifier, map[hash].identifier, hash);
+        exit(EXIT_FAILURE);
+    }
+    map[hash].identifier = (char*) malloc(strlen(identifier) * sizeof(char));
     strcpy(map[hash].identifier, identifier);
     map[hash].group_leaders.perf_group_leader_fd = perf_group_leader_fd;
     map[hash].group_leaders.rapl_group_leader_fd = rapl_group_leader_fd;
@@ -32,7 +33,7 @@ map_remove(const char *identifier) {
         return 1;
     }
     const int hash = map_get_hash(identifier);
-    map[hash].identifier = "";
+    map[hash].identifier = NULL;
     return 0;
 }
 
@@ -43,5 +44,5 @@ map_get_hash(const char *identifier) {
     while ((c = *identifier++)) {
         hash = ((hash << 5) + hash) + c;
     }
-    return hash;
+    return hash % SIZE_OF_MAP;
 }

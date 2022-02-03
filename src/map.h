@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <stddef.h>
 
 #ifndef MAP_H
 #define MAP_H
