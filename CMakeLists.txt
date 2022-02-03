@@ -20,6 +20,7 @@ set(SENSOR_SOURCES
     src/server.h src/server.c
     src/report.h src/report.c
     src/TLPCSensor.h src/TLPCSensor.c
+    src/map.h src/map.c
 )
 set(SENSOR_LIBRARIES pfm)
 
