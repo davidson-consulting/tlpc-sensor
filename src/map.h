@@ -21,18 +21,18 @@ struct map_group_leader_fd_by_id {
 struct map_group_leader_fd_by_id map[SIZE_OF_MAP];
 
 int
-map_contains(char *identifier);
+map_contains(const char *identifier);
 
 struct group_leaders_fd 
-map_get(char *identifier);
+map_get(const char *identifier);
 
 int
-map_put(char *identifier,  int rapl_group_leader_fd, int perf_group_leader_fd);
+map_put(const char *identifier,  int rapl_group_leader_fd, int perf_group_leader_fd);
 
 int
-map_remove (char *identifier);
+map_remove(const char *identifier);
 
 int 
-map_get_hash(char *identifier);
+map_get_hash(const char *identifier);
 
 #endif
