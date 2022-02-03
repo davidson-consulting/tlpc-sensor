@@ -4,6 +4,7 @@
 
 #include "sensor.h"
 #include "config.h"
+#include "map.h"
 
 #ifndef REPORT_H
 #define REPORT_H
