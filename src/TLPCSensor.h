@@ -32,7 +32,7 @@ char* _rapl_counters_type[_nb_rapl_counter] = {
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_fr_davidson_tlpc_sensor_TLPCSensor_start
-  (JNIEnv *, jobject);
+  (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     TLPCSensor
