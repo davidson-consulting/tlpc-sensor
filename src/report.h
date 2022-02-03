@@ -14,7 +14,7 @@ struct perf_data_by_id {
     char *identifier;
     struct perf_read_format *perf_buffer;
     struct perf_read_format *rapl_buffer;
-    double elapsedTime;
+    unsigned long long elapsedTime;
 };
 
 #define nb_entries 64

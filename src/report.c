@@ -16,8 +16,8 @@ report_store(const char* identifier,
     strcpy(entries[current_nb].identifier, identifier);
     entries[current_nb].perf_buffer = perf_buffer;
     entries[current_nb].rapl_buffer = rapl_buffer;
-    clock_t t = ending_time - starting_time;
-    entries[current_nb].elapsedTime = ((double)t)/CLOCKS_PER_SEC;
+    clock_t elapsedTime = ending_time - starting_time;
+    entries[current_nb].elapsedTime = (unsigned long long)((((double)elapsedTime)/CLOCKS_PER_SEC)*1E9);
     current_nb++;
     return 0;
 }
@@ -49,7 +49,7 @@ int report_write_entry(struct perf_data_by_id entry, FILE *fptr,
     for (int i = 0 ; i < config_perf->nb_counter; i++) {
         fprintf(fptr, "\t\t\"%s\":%ld,\n", config_perf->counters_names[i].value, perf_buffer->values[i].value);
     }   
-    fprintf(fptr, "\t\t\"%s\":%f\n", "duration", entry.elapsedTime);
+    fprintf(fptr, "\t\t\"%s\":%lld\n", "duration", entry.elapsedTime);
     map_remove(identifier);
     return 0;
 }
