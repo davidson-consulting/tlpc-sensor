@@ -11,6 +11,9 @@
 #include <fcntl.h>
 #include <errno.h>
 
+#ifndef PERF_H
+#define PERF_H
+
 int
 perf_initialize();
 
@@ -22,3 +25,5 @@ perf_open_event(struct perf_event_attr* attr, int pid, int cpu, int group_fd, in
 
 int
 perf_terminate();
+
+#endif

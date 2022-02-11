@@ -1,16 +1,3 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <linux/perf_event.h>
-#include <asm/unistd.h>
-#include <linux/hw_breakpoint.h>
-#include <sys/syscall.h>
-#include <perfmon/pfmlib_perf_event.h>
-#include <fcntl.h>
-#include <stddef.h>
-
 #include "config.h"
 
 struct config* init_config(int nb_counter, char* counter_names[]) {

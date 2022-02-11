@@ -34,7 +34,7 @@ JNIEXPORT void JNICALL Java_fr_davidson_tlpc_sensor_TLPCSensor_stop(JNIEnv *env,
     size_t rapl_buffer_size = offsetof(struct perf_read_format, values) + sizeof(struct perf_counter_value[(int)config_rapl->nb_counter]);
     struct perf_read_format *rapl_buffer = (struct perf_read_format *)malloc(rapl_buffer_size);
     sensor_read(parsed_identifier, perf_buffer, perf_buffer_size, rapl_buffer, rapl_buffer_size);
-    report_store(parsed_identifier, perf_buffer, rapl_buffer, map_get(parsed_identifier).starting_time, ending_time);
+    map_store(parsed_identifier, perf_buffer, rapl_buffer, ending_time);
     sensor_terminate(parsed_identifier);
 }
 

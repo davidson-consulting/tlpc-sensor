@@ -10,6 +10,7 @@
 #include <perfmon/pfmlib_perf_event.h>
 #include <fcntl.h>
 #include <stddef.h>
+#include <errno.h>
 
 #include "config.h"
 #include "perf.h"

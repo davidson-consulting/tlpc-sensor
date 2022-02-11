@@ -1,43 +1,24 @@
 #include "report.h"
 
 int
-report_init() {
-    current_nb = 0;
-    return 0;
-}
-
-int
-report_store(const char* identifier,
-             struct perf_read_format *perf_buffer, 
-             struct perf_read_format *rapl_buffer,
-             clock_t starting_time,
-             clock_t ending_time) {
-    entries[current_nb].identifier = (char*) malloc(1024 * sizeof(char));
-    strcpy(entries[current_nb].identifier, identifier);
-    entries[current_nb].perf_buffer = perf_buffer;
-    entries[current_nb].rapl_buffer = rapl_buffer;
-    clock_t elapsedTime = ending_time - starting_time;
-    entries[current_nb].elapsedTime = (unsigned long long)((((double)elapsedTime)/CLOCKS_PER_SEC)*1E9);
-    current_nb++;
-    return 0;
-}
-
-int
 report_write(const char* pathname, struct config *config_perf, struct config *config_rapl) {
     FILE *fptr = fopen(pathname == NULL ? "./report.json" : pathname, "w");
     fprintf(fptr, "{\n");
-    for (int e = 0 ; e < current_nb - 1 ; e++) {
-        report_write_entry(entries[e], fptr, config_perf, config_rapl);
+    for (int k = 0 ; k < size_keyset - 1 ; k++) {
+        char *key = keyset[k];
+        struct map_entry entry = map_get(key);
+        report_write_entry(entry, fptr, config_perf, config_rapl);
         fprintf(fptr, "\t},\n");
+        map_remove(key);
     }
-    report_write_entry(entries[current_nb - 1], fptr, config_perf, config_rapl);
+    report_write_entry(map_get(keyset[size_keyset - 1]), fptr, config_perf, config_rapl);
     fprintf(fptr, "\t}\n}");
     fclose(fptr);
-    current_nb = 0;
+    size_keyset = 0;
     return 0;
 }
 
-int report_write_entry(struct perf_data_by_id entry, FILE *fptr,
+int report_write_entry(struct map_entry entry, FILE *fptr,
                        struct config *config_perf, struct config *config_rapl) {
     const char* identifier = entry.identifier;
     struct perf_read_format *perf_buffer = entry.perf_buffer;
@@ -50,6 +31,5 @@ int report_write_entry(struct perf_data_by_id entry, FILE *fptr,
         fprintf(fptr, "\t\t\"%s\":%ld,\n", config_perf->counters_names[i].value, perf_buffer->values[i].value);
     }   
     fprintf(fptr, "\t\t\"%s\":%lld\n", "duration", entry.elapsedTime);
-    map_remove(identifier);
     return 0;
 }

@@ -31,25 +31,41 @@ int sensor_init(struct config *config_perf, struct config *config_rapl, pid_t pi
     return 0;
 }
 
+extern int errno;
+
 int 
 sensor_start(const char *identifier) {
     struct map_entry leaders = map_get(identifier);
     int perf_group_leader_fd = leaders.perf_group_leader_fd;
     int rapl_group_leader_fd = leaders.rapl_group_leader_fd;
-    if (ioctl(rapl_group_leader_fd, PERF_EVENT_IOC_RESET, PERF_IOC_FLAG_GROUP) != 0) {
-        printf("Something went wrong when reseting rapl group leader fd %d", rapl_group_leader_fd);
+    int code_error;
+    int errnum;
+    code_error = ioctl(rapl_group_leader_fd, PERF_EVENT_IOC_RESET, PERF_IOC_FLAG_GROUP);
+    if (code_error != 0) {
+        errnum = errno;
+        printf("Value of errno: %s(%d)\n", strerror(errnum), errno);
+        printf("Something went wrong when reseting rapl group leader fd %d %d", rapl_group_leader_fd, code_error);
         exit(EXIT_FAILURE);
     }
-    if (ioctl(perf_group_leader_fd, PERF_EVENT_IOC_RESET, PERF_IOC_FLAG_GROUP) != 0) {
-        printf("Something went wrong when reseting perf group leader fd %d", perf_group_leader_fd);
+    code_error = ioctl(perf_group_leader_fd, PERF_EVENT_IOC_RESET, PERF_IOC_FLAG_GROUP);
+    if (code_error != 0) {
+        errnum = errno;
+        printf("Value of errno: %s(%d)\n", strerror(errnum), errno);
+        printf("Something went wrong when reseting perf group leader fd %d %d", perf_group_leader_fd, code_error);
         exit(EXIT_FAILURE);
     }
-    if (ioctl(rapl_group_leader_fd, PERF_EVENT_IOC_ENABLE, PERF_IOC_FLAG_GROUP) != 0) {
-        printf("Something went wrong when enabling rapl group leader fd %d", rapl_group_leader_fd);
+    code_error = ioctl(rapl_group_leader_fd, PERF_EVENT_IOC_ENABLE, PERF_IOC_FLAG_GROUP);
+    if (code_error != 0) {
+        errnum = errno;
+        printf("Value of errno: %s(%d)\n", strerror(errnum), errno);
+        printf("Something went wrong when enabling rapl group leader fd %d %d", rapl_group_leader_fd, code_error);
         exit(EXIT_FAILURE);
     }
-    if (ioctl(perf_group_leader_fd, PERF_EVENT_IOC_ENABLE, PERF_IOC_FLAG_GROUP) != 0) {
-        printf("Something went wrong when enabling perf group leader fd %d", perf_group_leader_fd);
+    code_error = ioctl(perf_group_leader_fd, PERF_EVENT_IOC_ENABLE, PERF_IOC_FLAG_GROUP);
+    if (code_error != 0) {
+        errnum = errno;
+        printf("Value of errno: %s(%d)\n", strerror(errnum), errno);
+        printf("Something went wrong when enabling perf group leader fd %d %d", perf_group_leader_fd, code_error);
         exit(EXIT_FAILURE);
     }
     return 0;
