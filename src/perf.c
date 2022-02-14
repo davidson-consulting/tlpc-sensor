@@ -27,10 +27,11 @@ perf_init_event_attr(char* event_name, struct perf_event_attr* attr) {
 int
 perf_open_event(struct perf_event_attr* attr, int pid, int cpu, int group_fd, int flags) {
     errno = 0;
+    int errnum;
     int fd = perf_event_open(attr, pid, cpu, group_fd, flags);
     if (fd == -1) {
-        
-        fprintf(stderr, "Error opening fd: %d, %d, %d, %d / errno %d\n", pid, cpu, group_fd, flags, errno);
+        errnum = errno;
+        fprintf(stderr, "Error opening fd: %d, %d, %d, %d / errno %d (%s)\n", pid, cpu, group_fd, flags, errno, strerror(errnum));
         exit(EXIT_FAILURE);
     }
     return group_fd == -1 ? fd : group_fd;
