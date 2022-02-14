@@ -17,25 +17,12 @@ map_put(const char *identifier,  int rapl_group_leader_fd, int perf_group_leader
     const int hash = map_get_hash(identifier);
     if (map[hash].identifier != NULL && !strcmp(map[hash].identifier, identifier)) {
         printf("Collision detected between %s and %s (hash: %d)", identifier, map[hash].identifier, hash);
-        exit(EXIT_FAILURE);
+        //exit(EXIT_FAILURE);
     }
     map[hash].identifier = (char*) malloc(strlen(identifier) * sizeof(char));
-    strcpy(map[hash].identifier, identifier);
-    map[hash].perf_group_leader_fd= perf_group_leader_fd;
+    map[hash].perf_group_leader_fd = perf_group_leader_fd;
     map[hash].rapl_group_leader_fd = rapl_group_leader_fd;
     map[hash].starting_time = clock();
-    keyset[size_keyset] = (char*) malloc(strlen(identifier) * sizeof(char));
-    strcpy(keyset[size_keyset++], identifier);
-    return 0;
-}
-
-int
-map_store(const char* identifier, struct perf_read_format *perf_buffer,  struct perf_read_format *rapl_buffer, clock_t ending_time) {
-    const int hash = map_get_hash(identifier);
-    map[hash].perf_buffer = perf_buffer;
-    map[hash].rapl_buffer = rapl_buffer;
-    clock_t elapsedTime = ending_time - map[hash].starting_time;
-    map[hash].elapsedTime = (unsigned long long)((((double)elapsedTime)/CLOCKS_PER_SEC)*1E9);
     return 0;
 }
 
@@ -46,7 +33,7 @@ map_remove(const char *identifier) {
         return 1;
     }
     const int hash = map_get_hash(identifier);
-    map[hash].identifier = NULL;
+    free(map[hash].identifier);
     return 0;
 }
 

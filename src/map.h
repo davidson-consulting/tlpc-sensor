@@ -13,18 +13,11 @@ struct map_entry {
     int rapl_group_leader_fd;
     int perf_group_leader_fd;
     clock_t starting_time;
-    struct perf_read_format *perf_buffer;
-    struct perf_read_format *rapl_buffer;
-    unsigned long long elapsedTime;
 };
 
-#define SIZE_OF_MAP 1024
+#define SIZE_OF_MAP 655360
 
 struct map_entry map[SIZE_OF_MAP];
-
-char *keyset[SIZE_OF_MAP];
-
-int size_keyset;
 
 int
 map_contains(const char *identifier);
@@ -34,9 +27,6 @@ map_get(const char *identifier);
 
 int
 map_put(const char *identifier,  int rapl_group_leader_fd, int perf_group_leader_fd);
-
-int
-map_store(const char* identifier, struct perf_read_format *perf_buffer,  struct perf_read_format *rapl_buffer, clock_t ending_time);
 
 int
 map_remove(const char *identifier);
