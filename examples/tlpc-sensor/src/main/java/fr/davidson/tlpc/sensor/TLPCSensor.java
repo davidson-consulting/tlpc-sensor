@@ -20,11 +20,26 @@ public class TLPCSensor {
         final String libperfDotSO = "/libperf.so";
         final File fileLib = new File(DEFAULT_BASE_DIR + libperfDotSO);
         final File directory = new File(DEFAULT_BASE_DIR);
-        if (fileLib.exists()) {
-            fileLib.delete();
-            directory.delete();
+
+        try {
+            if (fileLib.exists()) {
+                fileLib.delete();
+                if (directory.exists()) {
+                    directory.delete();
+                }
+            }
+        } catch (Exception ignored) {
+            System.err.println("Something went wrong when preparing the directories that contains share library.");
+            System.err.println("It might result in an unstable run. Please check it out.");
+            System.err.println(directory.getAbsolutePath());
+            System.err.println(fileLib.getAbsolutePath());
         }
-        directory.mkdir();
+        try {
+            directory.mkdir();
+        } catch (Exception ignored) {
+
+        }
+
         final String extractFilePath = DEFAULT_BASE_DIR + libperfDotSO;
         try (final InputStream resourceAsStream = TLPCSensor.class.getResourceAsStream(libperfDotSO)) {
             try (final FileOutputStream writer = new FileOutputStream(extractFilePath)) {
