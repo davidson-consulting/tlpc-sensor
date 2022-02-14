@@ -7,13 +7,14 @@
  */
 JNIEXPORT void JNICALL Java_fr_davidson_tlpc_sensor_TLPCSensor_start(JNIEnv *env, jobject o, jstring identifier)
 {
-    (void)env;
     (void)o;
     struct config *config_perf = init_config(_nb_perf_counter, _perf_counters_type);
     struct config *config_rapl = init_config(_nb_rapl_counter, _rapl_counters_type);
     const char *parsed_identifier = (*env)->GetStringUTFChars(env, identifier, 0);
     sensor_init(config_perf, config_rapl, 0, parsed_identifier);
     sensor_start(parsed_identifier);
+    free(config_rapl);
+    free(config_perf);
 }
 
 /*
@@ -34,8 +35,10 @@ JNIEXPORT void JNICALL Java_fr_davidson_tlpc_sensor_TLPCSensor_stop(JNIEnv *env,
     size_t rapl_buffer_size = offsetof(struct perf_read_format, values) + sizeof(struct perf_counter_value[(int)config_rapl->nb_counter]);
     struct perf_read_format *rapl_buffer = (struct perf_read_format *)malloc(rapl_buffer_size);
     sensor_read(parsed_identifier, perf_buffer, perf_buffer_size, rapl_buffer, rapl_buffer_size);
-    map_store(parsed_identifier, perf_buffer, rapl_buffer, ending_time);
+    report_store(parsed_identifier, perf_buffer, rapl_buffer, ending_time);
     sensor_terminate(parsed_identifier);
+    free(config_rapl);
+    free(config_perf);
 }
 
 /*
@@ -49,4 +52,6 @@ JNIEXPORT void JNICALL Java_fr_davidson_tlpc_sensor_TLPCSensor_report(JNIEnv *en
     struct config *config_perf = init_config(_nb_perf_counter, _perf_counters_type);
     struct config *config_rapl = init_config(_nb_rapl_counter, _rapl_counters_type);
     report_write((*env)->GetStringUTFChars(env, pathname, 0), config_perf, config_rapl);
+    free(config_rapl);
+    free(config_perf);
 }
