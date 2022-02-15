@@ -52,8 +52,10 @@ server_start_sensor(int socket_desc, struct config *config_perf, struct config *
     char *pid_str = strtok(NULL, " ");
     pid_t pid = atoi(pid_str);
     char *identifier = strtok(NULL, " ");
-    sensor_init(config_perf, config_rapl, pid, identifier);
-    sensor_start(identifier);
+    int rapl_group_leader_fd = -1, perf_group_leader_fd = -1;
+    sensor_init(config_perf, config_rapl, pid, &perf_group_leader_fd, &rapl_group_leader_fd);
+    map_put(identifier, perf_group_leader_fd, rapl_group_leader_fd);
+    sensor_start(rapl_group_leader_fd, perf_group_leader_fd);
     if (sendto(socket_desc, "ACK", 3, 0,
         (struct sockaddr*)&client_addr, client_struct_length) < 0){
         printf("Can't send\n");
@@ -65,15 +67,16 @@ server_start_sensor(int socket_desc, struct config *config_perf, struct config *
 int
 server_stop_sensor(int socket_desc, struct config *config_perf, struct config *config_rapl, struct sockaddr_in client_addr, socklen_t client_struct_length) {
     char *identifier = strtok(NULL, " ");
-    sensor_stop(identifier);
+    struct map_entry entry = map_get(identifier);
+    sensor_stop(entry.perf_group_leader_fd, entry.rapl_group_leader_fd);
     clock_t ending_time = clock();
     size_t perf_buffer_size = offsetof(struct perf_read_format, values) + sizeof(struct perf_counter_value[(int)config_perf->nb_counter]);
     struct perf_read_format *perf_buffer = (struct perf_read_format *) malloc(perf_buffer_size);
     size_t rapl_buffer_size = offsetof(struct perf_read_format, values) + sizeof(struct perf_counter_value[(int)config_rapl->nb_counter]);
     struct perf_read_format *rapl_buffer = (struct perf_read_format *) malloc(rapl_buffer_size);
-    sensor_read(identifier, perf_buffer, perf_buffer_size, rapl_buffer, rapl_buffer_size);
+    sensor_read(entry.perf_group_leader_fd, entry.rapl_group_leader_fd, perf_buffer, perf_buffer_size, rapl_buffer, rapl_buffer_size);
     report_store(identifier, perf_buffer, rapl_buffer, ending_time);
-    sensor_terminate(identifier);
+    sensor_terminate(entry.perf_group_leader_fd, entry.rapl_group_leader_fd);
     if (sendto(socket_desc, "ACK", 3, 0,
                 (struct sockaddr*)&client_addr, client_struct_length) < 0){
         printf("Can't send\n");

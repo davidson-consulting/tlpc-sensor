@@ -26,7 +26,7 @@ struct map_entry
 map_get(const char *identifier);
 
 int
-map_put(const char *identifier,  int rapl_group_leader_fd, int perf_group_leader_fd);
+map_put(const char *identifier,  int perf_group_leader_fd, int rapl_group_leader_fd);
 
 int
 map_remove(const char *identifier);
