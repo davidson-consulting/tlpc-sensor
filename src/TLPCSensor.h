@@ -32,24 +32,16 @@ char* _rapl_counters_type[_nb_rapl_counter] = {
  * Method:    start
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_fr_davidson_tlpc_sensor_TLPCSensor_start
-  (JNIEnv *, jobject, jstring);
+JNIEXPORT jintArray JNICALL Java_fr_davidson_tlpc_sensor_TLPCSensor_sensorStart
+  (JNIEnv *, jobject);
 
 /*
  * Class:     TLPCSensor
  * Method:    stop
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_fr_davidson_tlpc_sensor_TLPCSensor_stop
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     TLPCSensor
- * Method:    report
- * Signature: (Ljava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_fr_davidson_tlpc_sensor_TLPCSensor_report
-  (JNIEnv *, jobject, jstring);
+JNIEXPORT jlongArray JNICALL Java_fr_davidson_tlpc_sensor_TLPCSensor_sensorStop
+  (JNIEnv *, jobject, jint, jint);
 
 #ifdef __cplusplus
 }

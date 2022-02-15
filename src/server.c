@@ -52,7 +52,7 @@ server_start_sensor(int socket_desc, struct config *config_perf, struct config *
     char *pid_str = strtok(NULL, " ");
     pid_t pid = atoi(pid_str);
     char *identifier = strtok(NULL, " ");
-    int rapl_group_leader_fd = -1, perf_group_leader_fd = -1;
+    int perf_group_leader_fd = -1, rapl_group_leader_fd = -1;
     sensor_init(config_perf, config_rapl, pid, &perf_group_leader_fd, &rapl_group_leader_fd);
     map_put(identifier, perf_group_leader_fd, rapl_group_leader_fd);
     sensor_start(rapl_group_leader_fd, perf_group_leader_fd);
