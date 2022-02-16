@@ -9,6 +9,8 @@ import java.util.*;
 
 public class TLPCSensor {
 
+    public static final String DURATION = "duration";
+
     private TLPCSensor() {
 
     }
@@ -23,39 +25,50 @@ public class TLPCSensor {
             "RAPL_ENERGY_PKG"
     };
 
-    private static IndicatorsPerIdentifier indicatorsPerIdentifier = new IndicatorsPerIdentifier();
+    private static final IndicatorsPerIdentifier indicatorsPerIdentifier = new IndicatorsPerIdentifier();
 
-    private static Map<String, int[]> groupLeaderPerIdentifier = new HashMap<>();
+    private final static Map<String, int[]> groupLeaderFdsPerIdentifier = new HashMap<>();
 
     private native int[] sensorStart();
 
     private native long[] sensorStop(int fd_perf, int fd_rapl);
 
     public static void start(String identifier) {
-        groupLeaderPerIdentifier.put(identifier, new TLPCSensor().sensorStart());
+        synchronized(groupLeaderFdsPerIdentifier) {
+            final int[] groupLeaderFd = new TLPCSensor().sensorStart();
+            groupLeaderFdsPerIdentifier.put(identifier, groupLeaderFd);
+        }
     }
 
     public static void stop(String identifier) {
-        final int[] groupLeaderFd = groupLeaderPerIdentifier.get(identifier);
-        final long[] indicators = new TLPCSensor().sensorStop(groupLeaderFd[0],groupLeaderFd[1]);
-        final IndicatorPerLabel indicatorsPerLabel = new IndicatorPerLabel();
-        for (int i = 0; i < perfCounterNames.length; i++) {
-            indicatorsPerLabel.put(perfCounterNames[i], indicators[i]);
+        synchronized(indicatorsPerIdentifier) {
+            final int[] groupLeaderFd = groupLeaderFdsPerIdentifier.get(identifier);
+            final long[] indicators = new TLPCSensor().sensorStop(groupLeaderFd[0], groupLeaderFd[1]);
+            final IndicatorPerLabel indicatorsPerLabel = new IndicatorPerLabel();
+            for (int i = 0; i < perfCounterNames.length; i++) {
+                indicatorsPerLabel.put(perfCounterNames[i], indicators[i]);
+            }
+            for (int i = 0; i < raplCounterNames.length; i++) {
+                indicatorsPerLabel.put(raplCounterNames[i], indicators[perfCounterNames.length + i - 1]);
+            }
+            indicatorsPerLabel.put(DURATION, indicators[indicators.length - 1]);
+            indicatorsPerIdentifier.put(identifier, indicatorsPerLabel);
         }
-        for (int i = 0; i < raplCounterNames.length; i++) {
-            indicatorsPerLabel.put(raplCounterNames[i], indicators[perfCounterNames.length + i - 1]);
+        synchronized (groupLeaderFdsPerIdentifier) {
+            groupLeaderFdsPerIdentifier.remove(identifier);
         }
-        indicatorsPerIdentifier.put(identifier, indicatorsPerLabel);
     }
 
     public static void report(String pathname) {
-        try (final FileWriter writer = new FileWriter(pathname)) {
-            final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            writer.write(gson.toJson(indicatorsPerIdentifier));
-            indicatorsPerIdentifier.clear();
-            groupLeaderPerIdentifier.clear();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        synchronized(indicatorsPerIdentifier) {
+            try (final FileWriter writer = new FileWriter(pathname)) {
+                final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                writer.write(gson.toJson(indicatorsPerIdentifier));
+                indicatorsPerIdentifier.clear();
+                groupLeaderFdsPerIdentifier.clear();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
