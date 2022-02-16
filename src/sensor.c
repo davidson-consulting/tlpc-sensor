@@ -78,9 +78,9 @@ sensor_stop(int perf_group_leader_fd, int rapl_group_leader_fd) {
 
 int 
 sensor_terminate(int perf_group_leader_fd, int rapl_group_leader_fd) {
-    perf_terminate();
     close(rapl_group_leader_fd);
     close(perf_group_leader_fd);
+    perf_terminate();
     return 0;
 }
 
@@ -88,13 +88,18 @@ int
 sensor_read(int perf_group_leader_fd, int rapl_group_leader_fd,
             struct perf_read_format *perf_buffer, size_t perf_buffer_size, 
             struct perf_read_format *rapl_buffer, size_t rapl_buffer_size) {
+    int errnum;
     long unsigned int nb_read = read(perf_group_leader_fd, perf_buffer, perf_buffer_size);
     if (nb_read != perf_buffer_size) {
         printf("Error read %ld while should have read %ld\n", nb_read, perf_buffer_size);
+        errnum = errno;
+        printf("Value of errno: %s(%d)\n", strerror(errnum), errno);
     }
     nb_read = read(rapl_group_leader_fd, rapl_buffer, rapl_buffer_size);
     if (nb_read != rapl_buffer_size) {
         printf("Error read %ld while should have read %ld\n", nb_read, rapl_buffer_size);
+        errnum = errno;
+        printf("Value of errno: %s(%d)\n", strerror(errnum), errno);
     }
     return nb_read;
 }
