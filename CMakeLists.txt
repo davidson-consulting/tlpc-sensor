@@ -13,14 +13,14 @@ find_package(JNI REQUIRED)
 include_directories(${JNI_INCLUDE_DIRS})
 
 set(SENSOR_SOURCES
-    src/main.c
+    src/map.h src/map.c
     src/config.h src/config.c
     src/sensor.h src/sensor.c
     src/perf.h src/perf.c
     src/server.h src/server.c
     src/report.h src/report.c
     src/TLPCSensor.h src/TLPCSensor.c
-    src/map.h src/map.c
+    src/main.c
 )
 set(SENSOR_LIBRARIES pfm)
 

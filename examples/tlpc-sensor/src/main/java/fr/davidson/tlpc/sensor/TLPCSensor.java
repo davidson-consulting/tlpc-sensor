@@ -1,18 +1,76 @@
 package fr.davidson.tlpc.sensor;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.*;
 import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.util.*;
 
 public class TLPCSensor {
 
-    public native void start(String identifier);
+    public static final String DURATION = "duration";
 
-    public native void stop(String identifier);
+    private TLPCSensor() {
 
-    public native void report(String pathname);
+    }
+
+    private static final String[] perfCounterNames = new String[]{
+            "INSTRUCTIONS_RETIRED",
+            "LLC_MISSES",
+            "CYCLES"
+    };
+
+    private static final String[] raplCounterNames = new String[]{
+            "RAPL_ENERGY_PKG"
+    };
+
+    private static final IndicatorsPerIdentifier indicatorsPerIdentifier = new IndicatorsPerIdentifier();
+
+    private final static Map<String, int[]> groupLeaderFdsPerIdentifier = new HashMap<>();
+
+    private native int[] sensorStart();
+
+    private native long[] sensorStop(int fd_perf, int fd_rapl);
+
+    public static void start(String identifier) {
+        synchronized(groupLeaderFdsPerIdentifier) {
+            final int[] groupLeaderFd = new TLPCSensor().sensorStart();
+            groupLeaderFdsPerIdentifier.put(identifier, groupLeaderFd);
+        }
+    }
+
+    public static void stop(String identifier) {
+        synchronized(indicatorsPerIdentifier) {
+            final int[] groupLeaderFd = groupLeaderFdsPerIdentifier.get(identifier);
+            final long[] indicators = new TLPCSensor().sensorStop(groupLeaderFd[0], groupLeaderFd[1]);
+            final IndicatorPerLabel indicatorsPerLabel = new IndicatorPerLabel();
+            for (int i = 0; i < perfCounterNames.length; i++) {
+                indicatorsPerLabel.put(perfCounterNames[i], indicators[i]);
+            }
+            for (int i = 0; i < raplCounterNames.length; i++) {
+                indicatorsPerLabel.put(raplCounterNames[i], indicators[perfCounterNames.length + i - 1]);
+            }
+            indicatorsPerLabel.put(DURATION, indicators[indicators.length - 1]);
+            indicatorsPerIdentifier.put(identifier, indicatorsPerLabel);
+        }
+        synchronized (groupLeaderFdsPerIdentifier) {
+            groupLeaderFdsPerIdentifier.remove(identifier);
+        }
+    }
+
+    public static void report(String pathname) {
+        synchronized(indicatorsPerIdentifier) {
+            try (final FileWriter writer = new FileWriter(pathname)) {
+                final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                writer.write(gson.toJson(indicatorsPerIdentifier));
+                indicatorsPerIdentifier.clear();
+                groupLeaderFdsPerIdentifier.clear();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     private static final String DEFAULT_BASE_DIR = System.getProperty("java.io.tmpdir") + "/libperf";
 
@@ -58,14 +116,14 @@ public class TLPCSensor {
         try {
             Field field = ClassLoader.class.getDeclaredField("usr_paths");
             field.setAccessible(true);
-            String[] paths = (String[])field.get(null);
+            String[] paths = (String[]) field.get(null);
             if (Arrays.asList(paths).contains(DEFAULT_BASE_DIR)) {
                 return;
             }
-            String[] tmp = new String[paths.length+1];
-            System.arraycopy(paths,0,tmp,0,paths.length);
+            String[] tmp = new String[paths.length + 1];
+            System.arraycopy(paths, 0, tmp, 0, paths.length);
             tmp[paths.length] = DEFAULT_BASE_DIR;
-            field.set(null,tmp);
+            field.set(null, tmp);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -81,19 +139,22 @@ public class TLPCSensor {
         /**
          *  This code is made avalaible to test the API
          */
-        final TLPCSensor tlpcSensor = new TLPCSensor();
-        tlpcSensor.start("main");
-        tlpcSensor.start("loop1");
-        for (int i = 0; i < 100000 ; i++) {
+        TLPCSensor.start("main");
+        TLPCSensor.start("loop1");
+        for (int i = 0; i < 100000; i++) {
             System.out.println(i);
         }
-        tlpcSensor.stop("loop1");
-        tlpcSensor.start("loop2");
-        for (int i = 0; i < 100000 ; i++) {
+        TLPCSensor.stop("loop1");
+        TLPCSensor.start("loop2");
+        for (int i = 0; i < 100000; i++) {
             System.out.println(i);
         }
-        tlpcSensor.stop("loop2");
-        tlpcSensor.stop("main");
-        tlpcSensor.report("target/report_java.json");
+        TLPCSensor.stop("loop2");
+        TLPCSensor.stop("main");
+        TLPCSensor.report("target/report_java.json");
+    }
+
+    public static void main(String[] args) {
+        test();
     }
 }

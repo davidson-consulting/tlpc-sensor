@@ -83,6 +83,9 @@ examples/TLPCSensor.class
 examples/tlpc-sensor/.vscode/
 examples/tlpc-sensor/target/
 examples/client
+examples/heavy_workload
+examples/tlpc-sensor/.idea/
+examples/tlpc-sensor/classpath
 
 # Bin Files
 

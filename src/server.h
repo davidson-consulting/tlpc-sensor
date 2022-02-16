@@ -22,6 +22,7 @@
 #include "sensor.h"
 #include "perf.h"
 #include "report.h"
+#include "map.h"
 
 #ifndef SERVER_H
 #define SERVER_H

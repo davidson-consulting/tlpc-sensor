@@ -13,7 +13,7 @@ map_get(const char *identifier) {
 }
 
 int
-map_put(const char *identifier,  int rapl_group_leader_fd, int perf_group_leader_fd) {
+map_put(const char *identifier,  int perf_group_leader_fd, int rapl_group_leader_fd) {
     const int hash = map_get_hash(identifier);
     if (map[hash].identifier != NULL && !strcmp(map[hash].identifier, identifier)) {
         printf("Collision detected between %s and %s (hash: %d)", identifier, map[hash].identifier, hash);
