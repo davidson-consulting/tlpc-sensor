@@ -55,12 +55,20 @@ public class TLPCSensor {
             try (final FileWriter writer = new FileWriter(pathname)) {
                 final Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 writer.write(gson.toJson(indicatorsPerIdentifier));
-                indicatorsPerIdentifier.clear();
-                groupLeaderFdsPerIdentifier.clear();
+                reset();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public static IndicatorsPerIdentifier getIndicatorsPerIdentifier() {
+        return indicatorsPerIdentifier;
+    }
+
+    public static void reset() {
+        indicatorsPerIdentifier.clear();
+        groupLeaderFdsPerIdentifier.clear();
     }
 
     private static final String DEFAULT_BASE_DIR = System.getProperty("java.io.tmpdir") + "/libperf";
