@@ -13,12 +13,15 @@
 extern "C" {
 #endif
 
-#define _nb_perf_counter 3
+#define _nb_perf_counter 6
 
 char* _perf_counters_type[_nb_perf_counter] = {
     "INSTRUCTIONS_RETIRED",
-    "LLC_MISSES",
-    "CYCLES"
+    "UNHALTED_REFERENCE_CYCLES",
+    "BRANCH_INSTRUCTIONS_RETIRED",
+    "MISPREDICTED_BRANCH_RETIRED",
+    "LLC_REFERENCES",
+    "LLC_MISSES"
 };
 
 #define _nb_rapl_counter 1

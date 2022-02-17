@@ -9,21 +9,9 @@ import java.util.*;
 
 public class TLPCSensor {
 
-    public static final String DURATION = "duration";
-
     private TLPCSensor() {
 
     }
-
-    private static final String[] perfCounterNames = new String[]{
-            "INSTRUCTIONS_RETIRED",
-            "LLC_MISSES",
-            "CYCLES"
-    };
-
-    private static final String[] raplCounterNames = new String[]{
-            "RAPL_ENERGY_PKG"
-    };
 
     private static final IndicatorsPerIdentifier indicatorsPerIdentifier = new IndicatorsPerIdentifier();
 
@@ -34,24 +22,27 @@ public class TLPCSensor {
     private native long[] sensorStop(int fd_perf, int fd_rapl);
 
     public static void start(String identifier) {
-        synchronized(groupLeaderFdsPerIdentifier) {
+        synchronized (groupLeaderFdsPerIdentifier) {
             final int[] groupLeaderFd = new TLPCSensor().sensorStart();
             groupLeaderFdsPerIdentifier.put(identifier, groupLeaderFd);
         }
     }
 
     public static void stop(String identifier) {
-        synchronized(indicatorsPerIdentifier) {
+        synchronized (indicatorsPerIdentifier) {
             final int[] groupLeaderFd = groupLeaderFdsPerIdentifier.get(identifier);
             final long[] indicators = new TLPCSensor().sensorStop(groupLeaderFd[0], groupLeaderFd[1]);
             final IndicatorPerLabel indicatorsPerLabel = new IndicatorPerLabel();
-            for (int i = 0; i < perfCounterNames.length; i++) {
-                indicatorsPerLabel.put(perfCounterNames[i], indicators[i]);
+            for (int i = 0; i < IndicatorPerLabel.PERF_COUNTER_NAMES.length; i++) {
+                indicatorsPerLabel.put(IndicatorPerLabel.PERF_COUNTER_NAMES[i], indicators[i]);
             }
-            for (int i = 0; i < raplCounterNames.length; i++) {
-                indicatorsPerLabel.put(raplCounterNames[i], indicators[perfCounterNames.length + i - 1]);
+            for (int i = 0; i < IndicatorPerLabel.RAPL_COUNTER_NAMES.length; i++) {
+                indicatorsPerLabel.put(
+                        IndicatorPerLabel.RAPL_COUNTER_NAMES[i],
+                        indicators[IndicatorPerLabel.PERF_COUNTER_NAMES.length + i - 1]
+                );
             }
-            indicatorsPerLabel.put(DURATION, indicators[indicators.length - 1]);
+            indicatorsPerLabel.put(IndicatorPerLabel.KEY_DURATION, indicators[indicators.length - 1]);
             indicatorsPerIdentifier.put(identifier, indicatorsPerLabel);
         }
         synchronized (groupLeaderFdsPerIdentifier) {
@@ -60,7 +51,7 @@ public class TLPCSensor {
     }
 
     public static void report(String pathname) {
-        synchronized(indicatorsPerIdentifier) {
+        synchronized (indicatorsPerIdentifier) {
             try (final FileWriter writer = new FileWriter(pathname)) {
                 final Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 writer.write(gson.toJson(indicatorsPerIdentifier));
@@ -135,7 +126,7 @@ public class TLPCSensor {
         System.loadLibrary("perf");
     }
 
-    public static void test() {
+    public static void test() throws Exception {
         /**
          *  This code is made avalaible to test the API
          */
@@ -152,9 +143,11 @@ public class TLPCSensor {
         TLPCSensor.stop("loop2");
         TLPCSensor.stop("main");
         TLPCSensor.report("target/report_java.json");
+        final IndicatorsPerIdentifier indicatorsPerIdentifier = new Gson().fromJson(new FileReader("target/report_java.json"), IndicatorsPerIdentifier.class);
+        System.out.println(indicatorsPerIdentifier);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         test();
     }
 }
