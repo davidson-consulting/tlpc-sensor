@@ -21,6 +21,8 @@ public class TLPCSensor {
 
     private native long[] sensorStop(int fd_perf, int fd_rapl);
 
+    private native long[] sensorRead(int fd_perf, int fd_rapl);
+
     public static void start(String identifier) {
         synchronized (groupLeaderFdsPerIdentifier) {
             final int[] groupLeaderFd = new TLPCSensor().sensorStart();
@@ -32,22 +34,19 @@ public class TLPCSensor {
         synchronized (indicatorsPerIdentifier) {
             final int[] groupLeaderFd = groupLeaderFdsPerIdentifier.get(identifier);
             final long[] indicators = new TLPCSensor().sensorStop(groupLeaderFd[0], groupLeaderFd[1]);
-            final IndicatorPerLabel indicatorsPerLabel = new IndicatorPerLabel();
-            for (int i = 0; i < IndicatorPerLabel.PERF_COUNTER_NAMES.length; i++) {
-                indicatorsPerLabel.put(IndicatorPerLabel.PERF_COUNTER_NAMES[i], indicators[i]);
-            }
-            for (int i = 0; i < IndicatorPerLabel.RAPL_COUNTER_NAMES.length; i++) {
-                indicatorsPerLabel.put(
-                        IndicatorPerLabel.RAPL_COUNTER_NAMES[i],
-                        indicators[IndicatorPerLabel.PERF_COUNTER_NAMES.length + i - 1]
-                );
-            }
-            indicatorsPerLabel.put(IndicatorPerLabel.KEY_DURATION, indicators[indicators.length - 1]);
-            indicatorsPerIdentifier.put(identifier, indicatorsPerLabel);
+            final IndicatorPerLabel indicatorPerLabel = fromRawArray(indicators);
+            indicatorsPerIdentifier.put(identifier, indicatorPerLabel);
         }
         synchronized (groupLeaderFdsPerIdentifier) {
             groupLeaderFdsPerIdentifier.remove(identifier);
         }
+    }
+
+    public static IndicatorPerLabel read(String identifier) {
+        final int[] groupLeaderFd = groupLeaderFdsPerIdentifier.get(identifier);
+        final long[] indicators = new TLPCSensor().sensorRead(groupLeaderFd[0], groupLeaderFd[1]);
+        final IndicatorPerLabel indicatorPerLabel = fromRawArray(indicators);
+        return indicatorPerLabel;
     }
 
     public static void report(String pathname) {
@@ -64,6 +63,21 @@ public class TLPCSensor {
 
     public static IndicatorsPerIdentifier getIndicatorsPerIdentifier() {
         return indicatorsPerIdentifier;
+    }
+
+    private static IndicatorPerLabel fromRawArray(final long[] indicators) {
+        final IndicatorPerLabel indicatorsPerLabel = new IndicatorPerLabel();
+        for (int i = 0; i < IndicatorPerLabel.PERF_COUNTER_NAMES.length; i++) {
+            indicatorsPerLabel.put(IndicatorPerLabel.PERF_COUNTER_NAMES[i], indicators[i]);
+        }
+        for (int i = 0; i < IndicatorPerLabel.RAPL_COUNTER_NAMES.length; i++) {
+            indicatorsPerLabel.put(
+                    IndicatorPerLabel.RAPL_COUNTER_NAMES[i],
+                    indicators[IndicatorPerLabel.PERF_COUNTER_NAMES.length + i - 1]
+            );
+        }
+        indicatorsPerLabel.put(IndicatorPerLabel.KEY_DURATION, indicators[indicators.length - 1]);
+        return indicatorsPerLabel;
     }
 
     public static void reset() {
