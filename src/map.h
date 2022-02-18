@@ -3,7 +3,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <stddef.h>
-#include <time.h>
 
 #ifndef MAP_H
 #define MAP_H
@@ -12,7 +11,6 @@ struct map_entry {
     char *identifier;
     int rapl_group_leader_fd;
     int perf_group_leader_fd;
-    clock_t starting_time;
 };
 
 #define SIZE_OF_MAP 655360

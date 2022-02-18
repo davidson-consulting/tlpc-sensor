@@ -55,6 +55,14 @@ int server_report(
     socklen_t client_struct_length
 );
 
+int server_read(
+    int socket_desc, 
+    struct config *config_perf, 
+    struct config *config_rapl, 
+    struct sockaddr_in client_addr, 
+    socklen_t client_struct_length
+);
+
 int server_stop(int socket_desc);
 
 #endif

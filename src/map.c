@@ -22,7 +22,6 @@ map_put(const char *identifier,  int perf_group_leader_fd, int rapl_group_leader
     map[hash].identifier = (char*) malloc(strlen(identifier) * sizeof(char));
     map[hash].perf_group_leader_fd = perf_group_leader_fd;
     map[hash].rapl_group_leader_fd = rapl_group_leader_fd;
-    map[hash].starting_time = clock();
     return 0;
 }
 
