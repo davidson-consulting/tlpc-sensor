@@ -30,20 +30,13 @@ char* _rapl_counters_type[_nb_rapl_counter] = {
     "RAPL_ENERGY_PKG"
 };
 
-/*
- * Class:     TLPCSensor
- * Method:    start
- * Signature: ()V
- */
 JNIEXPORT jintArray JNICALL Java_fr_davidson_tlpc_sensor_TLPCSensor_sensorStart
   (JNIEnv *, jobject);
 
-/*
- * Class:     TLPCSensor
- * Method:    stop
- * Signature: (Ljava/lang/String;)V
- */
 JNIEXPORT jlongArray JNICALL Java_fr_davidson_tlpc_sensor_TLPCSensor_sensorStop
+  (JNIEnv *, jobject, jint, jint);
+
+JNIEXPORT jlongArray JNICALL Java_fr_davidson_tlpc_sensor_TLPCSensor_sensorRead
   (JNIEnv *, jobject, jint, jint);
 
 #ifdef __cplusplus
