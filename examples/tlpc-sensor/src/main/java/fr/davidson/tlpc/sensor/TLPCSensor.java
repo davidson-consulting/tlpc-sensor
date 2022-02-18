@@ -80,6 +80,11 @@ public class TLPCSensor {
         return indicatorsPerLabel;
     }
 
+    public static void reset(final String identifier) {
+        indicatorsPerIdentifier.remove(identifier);
+        groupLeaderFdsPerIdentifier.remove(identifier);
+    }
+
     public static void reset() {
         indicatorsPerIdentifier.clear();
         groupLeaderFdsPerIdentifier.clear();
