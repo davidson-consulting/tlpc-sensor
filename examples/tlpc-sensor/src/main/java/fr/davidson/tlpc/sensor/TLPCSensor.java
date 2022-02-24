@@ -1,8 +1,5 @@
 package fr.davidson.tlpc.sensor;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -51,13 +48,8 @@ public class TLPCSensor {
 
     public static void report(String pathname) {
         synchronized (indicatorsPerIdentifier) {
-            try (final FileWriter writer = new FileWriter(pathname)) {
-                final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                writer.write(gson.toJson(indicatorsPerIdentifier));
-                reset();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            Report.report(pathname, indicatorsPerIdentifier);
+            reset();
         }
     }
 
@@ -151,30 +143,5 @@ public class TLPCSensor {
         extractLibPerf();
         addDirectoryToLoadedLibraries();
         System.loadLibrary("perf");
-    }
-
-    public static void test() throws Exception {
-        /**
-         *  This code is made avalaible to test the API
-         */
-        TLPCSensor.start("main");
-        TLPCSensor.start("loop1");
-        for (int i = 0; i < 100000; i++) {
-            System.out.println(i);
-        }
-        TLPCSensor.stop("loop1");
-        TLPCSensor.start("loop2");
-        for (int i = 0; i < 100000; i++) {
-            System.out.println(i);
-        }
-        TLPCSensor.stop("loop2");
-        TLPCSensor.stop("main");
-        TLPCSensor.report("target/report_java.json");
-        final IndicatorsPerIdentifier indicatorsPerIdentifier = new Gson().fromJson(new FileReader("target/report_java.json"), IndicatorsPerIdentifier.class);
-        System.out.println(indicatorsPerIdentifier);
-    }
-
-    public static void main(String[] args) throws Exception {
-        test();
     }
 }

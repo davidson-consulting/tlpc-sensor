@@ -14,6 +14,12 @@ public class TLPCSensorTest {
         TLPCSensor.start("fr.davidson.tlpc.sensor.TLPCSensorTest#test");
         System.out.println("Measuring the consumption of this print!");
         TLPCSensor.stop("fr.davidson.tlpc.sensor.TLPCSensorTest#test");
+        TLPCSensor.start("fr.davidson.tlpc.sensor.TLPCSensorTest#test2");
+        System.out.println("Measuring the consumption of this print!");
+        TLPCSensor.stop("fr.davidson.tlpc.sensor.TLPCSensorTest#test2");
+        TLPCSensor.start("fr.davidson.tlpc.sensor.TLPCSensorTest#test3");
+        System.out.println("Measuring the consumption of this print!");
+        TLPCSensor.stop("fr.davidson.tlpc.sensor.TLPCSensorTest#test3");
         TLPCSensor.report("target/test.json");
     }
 
