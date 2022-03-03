@@ -42,8 +42,7 @@ public class TLPCSensor {
     public static IndicatorPerLabel read(String identifier) {
         final int[] groupLeaderFd = groupLeaderFdsPerIdentifier.get(identifier);
         final long[] indicators = new TLPCSensor().sensorRead(groupLeaderFd[0], groupLeaderFd[1]);
-        final IndicatorPerLabel indicatorPerLabel = fromRawArray(indicators);
-        return indicatorPerLabel;
+        return fromRawArray(indicators);
     }
 
     public static void report(String pathname) {
@@ -80,6 +79,15 @@ public class TLPCSensor {
     public static void reset() {
         indicatorsPerIdentifier.clear();
         groupLeaderFdsPerIdentifier.clear();
+    }
+
+    public synchronized static void consume(long consumption, String keyConsumption) {
+        final String identifier = "tlpc-consume-" + System.currentTimeMillis();
+        TLPCSensor.start(identifier);
+        long currentConsumption = 0L;
+        while ((currentConsumption += TLPCSensor.read(identifier).get(keyConsumption) ) < consumption);
+        TLPCSensor.stop(identifier);
+        TLPCSensor.reset(identifier);
     }
 
     private static final String DEFAULT_BASE_DIR = System.getProperty("java.io.tmpdir") + "/libperf";
