@@ -82,10 +82,15 @@ public class TLPCSensor {
     }
 
     public synchronized static void consume(long consumption, String keyConsumption) {
+        if (consumption == 0) {
+            return;
+        }
         final String identifier = "tlpc-consume-" + System.currentTimeMillis();
         TLPCSensor.start(identifier);
         long currentConsumption = 0L;
-        while ((currentConsumption += TLPCSensor.read(identifier).get(keyConsumption) ) < consumption);
+        while (currentConsumption < consumption) {
+            currentConsumption += TLPCSensor.read(identifier).get(keyConsumption);
+        }
         TLPCSensor.stop(identifier);
         TLPCSensor.reset(identifier);
     }
